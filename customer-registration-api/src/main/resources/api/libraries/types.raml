@@ -1,0 +1,20 @@
+#%RAML 1.0 Library
+usage: Client API Types
+
+types:
+  # Errors
+  ErrorMessageDefinition:
+    type: !include ../types/errorResponse.raml
+  
+  # Customers types
+  QueryAllCustomersResponse:
+    type: !include ../types/queryAllCustomersResponse.raml
+  
+  QueryCustomersByIdResponse:
+    type: !include ../types/queryCustomerByIdResponse.raml
+  
+  InsertCustomerRequest:
+    type: !include ../types/insertCustomerRequest.raml.raml
+  
+  InsertCustomerResponse:
+    type: !include ../types/insertCustomerResponse.raml

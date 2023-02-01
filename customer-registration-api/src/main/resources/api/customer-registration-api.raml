@@ -1,0 +1,74 @@
+#%RAML 1.0
+title: customer-registration-api
+
+uses:
+  types: libraries/types.raml
+
+/clients:
+  get:
+    displayName: List all customers
+    description: Endpoint responsible for listing all customers.
+
+    responses:
+      200:
+        body:
+          application/json:
+            type: types.QueryAllCustomersResponse
+            example: !include examples/queryAllCustomersResponse.json
+      404:
+        body:
+          application/json:
+            example: !include examples/error-404.json
+      500:
+        body:
+          application/json:
+            example: !include examples/error-500.json
+
+  post: 
+    displayName: Insert customer
+    description: Endpoint responsible for inserting new customers.
+
+    body:
+      application/json:
+        type: types.InsertCustomerRequest
+        example: !include examples/insertCustomerRequest.json
+    
+    responses:
+      201:
+        body:
+          application/json:
+            type: types.InsertCustomerResponse
+            example: !include examples/insertCustomerResponse.json
+      404:
+        body:
+          application/json:
+            example: !include examples/error-404.json
+      500:
+        body:
+          application/json:
+            example: !include examples/error-500.json
+
+  /{client_id}:
+    get:
+      displayName: List customer
+      description: Endpoint responsible for listing a customer using the ID.
+
+      responses:
+        200:
+          body:
+            application/json:
+              type: types.QueryCustomersByIdResponse
+              example: !include examples/queryCustomerByIdResponse.json
+        404:
+          body:
+            application/json:
+              example: !include examples/error-404.json
+        500:
+          body:
+            application/json:
+              example: !include examples/error-500.json
+
+/health-check:
+  get:
+    displayName: Health Check
+    description: Endpoint responsible for showing API health.

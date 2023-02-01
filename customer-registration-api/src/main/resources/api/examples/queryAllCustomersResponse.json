@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Jane",
+    "lastName": "Doe",
+    "phones": [
+      {
+        "ddd": 11,
+        "number": 991199191
+      }
+    ],
+    "address": {
+      "street": "Rua Porto Alegre",
+      "number": 6610,
+      "district": "Centro",
+      "city": "Central City",
+      "state": "SP",
+      "postalCode": "98765-000"
+    }
+  },
+  {
+    "name": "Jhon",
+    "lastName": "Doe",
+    "phones": [
+      {
+        "ddd": 11,
+        "number": 999190000
+      }
+    ],
+    "address": {
+      "street": "Rua São Paulo",
+      "number": 1221,
+      "district": "Centro",
+      "city": "Coast City",
+      "state": "SP",
+      "postalCode": "88765-000"
+    }
+  }
+]
