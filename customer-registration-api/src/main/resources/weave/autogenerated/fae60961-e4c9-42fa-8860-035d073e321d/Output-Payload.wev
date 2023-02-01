@@ -1,0 +1,6 @@
+%dw 2.0
+
+type auto_fae60961_e4c9_42fa_8860_035d073e321d_Output_Payload = Array<{  lastName: String,   address?: {    number?: Number,     city?: String,     street?: String,     district?: String,     postalCode?: String,     state?: String,     _?: Any  },   name: String,   phones?: Array<{    number?: Number,     ddd?: Number,     _?: Any  }>, 
+  _?: Any
+}>
+
