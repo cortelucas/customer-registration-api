@@ -1,0 +1,9 @@
+http_listener:
+  host: "127.0.0.1"
+  port: "3030"
+  base_path: "/api"
+  read_timeout: "30000"
+  
+db:
+  url: "jdbc:sqlite:database/customers.db"
+  driver: "org.sqlite.JDBC"

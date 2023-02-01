@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<global-property doc:name="Global Property"
+		doc:id="69c5787f-ac5b-49b4-b271-c1264d1acc90" name="ENV" value="dev" />
+	<configuration-properties
+		doc:name="Configuration properties"
+		doc:id="401e542e-d2cf-4d6c-9e89-879a8fe6bf1b"
+		file="properties/${ENV}.yaml" />
+	<http:listener-config
+		name="customer-registration-api-httpListenerConfig" basePath="/api">
+		<http:listener-connection host="0.0.0.0"
+			port="3030" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config"
+		doc:id="637fdfa3-64eb-41a4-a881-3d2f329bbc71">
+		<db:generic-connection url="${db.url}"
+			driverClassName="${db.driver}" />
+	</db:config>
+</mule>
