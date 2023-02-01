@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="queryAllCustomers" doc:id="fae60961-e4c9-42fa-8860-035d073e321d" >
+		<logger level="INFO" doc:name="init_flow" doc:id="a3243300-0351-42dd-95f2-caefa1de73fe" message='#["init flow -&gt; " ++ flow.name]' />
+		<ee:transform doc:name="Transform Message" doc:id="52cc6861-c568-43a5-aaf1-7bf7c8d1ab0e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "flow"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="end_flow" doc:id="38e78a81-08cf-4efd-92ed-3b0d054207bc" message='#["init flow -&gt; " ++ flow.name]'/>
+	</flow>
+</mule>
