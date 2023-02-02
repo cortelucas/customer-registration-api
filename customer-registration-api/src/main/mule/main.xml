@@ -175,12 +175,8 @@ output application/json
         <logger level="INFO" message="get:\health-check:customer-registration-api-config" />
     </flow>
     <flow name="get:\clients\(client_id):customer-registration-api-config">
-        <ee:transform>
-            <ee:variables>
-                <ee:set-variable variableName="client_id">attributes.uriParams.'client_id'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <ee:transform>
+        <flow-ref doc:name="Flow Reference" doc:id="4bb15982-3e09-4af4-b94b-4a77154fc5f6" name="queryCustomerById"/>
+		<ee:transform>
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
