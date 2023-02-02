@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="insertCustomer" doc:id="6ff88473-7243-4970-bf81-be10270c7e5e" >
+		<logger level="INFO" doc:name="init_flow" doc:id="017d6207-4eb2-4cf3-a659-5f2a429d445a" message='#["init flow -&gt; " ++ flow.name]' />
+		<flow-ref doc:name="insertTableClient" doc:id="228c4bc2-af10-4fd3-ac00-2227cad1bc85" name="insertTableClient"/>
+		<flow-ref doc:name="insertTableAddress" doc:id="eb0ac761-2b95-4734-964d-19e2730316a3" name="insertTableAddress"/>
+		<flow-ref doc:name="insertTablePhone" doc:id="3001bfb9-abe8-4b22-925d-d97a80f8bcaf" name="insertTablePhone"/>
+		<ee:transform doc:name="Transform Message" doc:id="bacb4417-5de7-4894-b010-51d17c27a556">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+	id: vars.tableClient.client_id,
+	message: "Client successfully created."
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		<logger level="INFO" doc:name="end_flow" doc:id="e8d13d3b-cd72-4268-8c06-fec85895f548" message='#["init flow -&gt; " ++ flow.name]' />
+	</flow>
+	<flow name="insertTableClient" doc:id="d3c77e4b-8e96-4871-bb72-0f2dd6c3f8c1" >
+		<try doc:name="Try" doc:id="48e56010-fd0e-4e82-b515-26fea0e5cbc3">
+			<ee:transform doc:name="tableClient" doc:id="a2a0b3ee-6be7-45f0-8556-cb3df617313d">
+			<ee:message>
+			</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="tableClient" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	client_id: uuid(),
+	name: vars.customer.name,
+	lastname: vars.customer.lastName
+}]]></ee:set-variable>
+				</ee:variables>
+		</ee:transform>
+			<db:insert doc:name="Insert" doc:id="c80d9d10-f7d3-4656-91cd-ae006652cf77" config-ref="Database_Config">
+				<db:sql><![CDATA[INSERT INTO client
+	(client_id, name, lastname)
+VALUES
+	(:client_id, :name, :lastname)
+;
+]]></db:sql>
+				<db:input-parameters><![CDATA[#[vars.tableClient]]]></db:input-parameters>
+			</db:insert>
+		</try>
+	</flow>
+	<flow name="insertTableAddress" doc:id="bcd655bb-b7ab-4748-ac5a-2f6f71a6e4c0" >
+		<try doc:name="Try" doc:id="54504bd4-aa46-45ea-a005-5cb98a235dba" >
+			<ee:transform doc:name="tableAddress" doc:id="2956cbe6-ae5e-48d6-93e1-6281e83d0d67">
+			<ee:message>
+			</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="tableAddress" ><![CDATA[%dw 2.0
+output application/json
+
+var address = vars.customer.address
+---
+{
+	address_id: uuid(),
+	client_id: vars.tableClient.client_id,
+	street: address.street,
+	number: address.number,
+	district: address.district,
+	city: address.city,
+	state: address.state,
+	postalCode: address.postalCode
+}]]></ee:set-variable>
+				</ee:variables>
+		</ee:transform>
+			<db:insert doc:name="Insert" doc:id="c34993a5-7e3e-4b33-9950-4c7a30e734b2" config-ref="Database_Config">
+				<db:sql ><![CDATA[INSERT INTO address (
+    address_id, client_id, street, "number", district, city, state, postal_code
+)
+VALUES (
+    :address_id, :client_id, :street, :number, :district, :city, :state, :postalCode
+);]]></db:sql>
+				<db:input-parameters ><![CDATA[#[vars.tableAddress]]]></db:input-parameters>
+			</db:insert>
+		</try>
+	</flow>
+	<flow name="insertTablePhone" doc:id="9d01d970-816e-4e0c-ae8f-fd31d0bf9e4f" >
+		<try doc:name="Try" doc:id="7b587873-8e00-4ae0-b4b3-e0342abe19c1" >
+			<ee:transform doc:name="tablePhone" doc:id="bb3b0408-46c0-4c6b-9f32-51b2ac6cea91" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="tablePhone" ><![CDATA[%dw 2.0
+output application/json
+
+var phones = vars.customer.phones
+---
+phones map ((phone) -> {
+	phone_id: uuid(),
+	client_id: vars.tableClient.client_id,
+	phone_number: "(" ++ (phone.ddd default "") ++ ") " ++ phone.number default ""
+})]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<db:bulk-insert doc:name="Bulk insert" doc:id="578bd804-b1d0-464b-aab2-e22db27a00fd" config-ref="Database_Config">
+				<db:bulk-input-parameters ><![CDATA[#[vars.tablePhone]]]></db:bulk-input-parameters>
+				<db:sql ><![CDATA[INSERT INTO phone
+(phone_id, client_id, phone_number)
+VALUES(:phone_id, :client_id, :phone_number);
+]]></db:sql>
+			</db:bulk-insert>
+		</try>
+	</flow>
+</mule>

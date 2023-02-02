@@ -1,0 +1,8 @@
+%dw 2.0
+
+type auto_bcd655bb_b7ab_4748_ac5a_2f6f71a6e4c0_Output_Variables_customer = {|
+  client_id: String, 
+  name: String, 
+  lastname: String
+|}
+

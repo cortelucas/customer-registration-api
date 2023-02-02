@@ -1,0 +1,13 @@
+%dw 2.0
+
+type auto_9d01d970_816e_4e0c_ae8f_fd31d0bf9e4f_Input_Variables_tableAddress = {|
+  address_id: String, 
+  client_id: Null, 
+  street: Null, 
+  number: Null, 
+  district: Null, 
+  city: Null, 
+  state: Null, 
+  postalCode: Null
+|}
+

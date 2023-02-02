@@ -5,5 +5,5 @@ http_listener:
   read_timeout: "30000"
   
 db:
-  url: "jdbc:sqlite:database/customers.db"
+  url: "jdbc:sqlite:C:/Users/lcorte/git/customer-registration-api/customer-registration-api/src/main/resources/database/customers.db"
   driver: "org.sqlite.JDBC"

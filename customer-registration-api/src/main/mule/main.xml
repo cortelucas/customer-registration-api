@@ -207,16 +207,16 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="post:\clients:application\json:customer-registration-api-config">
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
+        <ee:transform doc:name="customer" doc:id="d8c3f62f-30e7-4842-bd4d-ef3c3351dfa8" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="customer" ><![CDATA[%dw 2.0
 output application/json
 ---
-{
-  id: "ed3e26fa-c4b2-4de6-818f-2d7093a6300e",
-  message: "Client successfully created."
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="insertCustomer" doc:id="bf93edd2-c242-4586-9619-d2c915744e91" name="insertCustomer"/>
     </flow>
 </mule>
