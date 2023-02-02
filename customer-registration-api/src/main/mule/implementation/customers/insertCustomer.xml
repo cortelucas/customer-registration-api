@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		<ee:transform doc:name="Transform Message" doc:id="bacb4417-5de7-4894-b010-51d17c27a556">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
-output application/java
+output application/json
 ---
 {
 	id: vars.tableClient.client_id,
