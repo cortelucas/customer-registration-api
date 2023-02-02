@@ -176,31 +176,6 @@ output application/json
     </flow>
     <flow name="get:\clients\(client_id):customer-registration-api-config">
         <flow-ref doc:name="Flow Reference" doc:id="4bb15982-3e09-4af4-b94b-4a77154fc5f6" name="queryCustomerById"/>
-		<ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-{
-  name: "Jane",
-  lastName: "Doe",
-  phones: [
-    {
-      ddd: 11,
-      number: 991199191
-    }
-  ],
-  address: {
-    street: "Rua Porto Alegre",
-    number: 6610,
-    district: "Centro",
-    city: "Central City",
-    state: "SP",
-    postalCode: "98765-000"
-  }
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
     </flow>
     <flow name="post:\clients:application\json:customer-registration-api-config">
         <ee:transform doc:name="customer" doc:id="d8c3f62f-30e7-4842-bd4d-ef3c3351dfa8" >

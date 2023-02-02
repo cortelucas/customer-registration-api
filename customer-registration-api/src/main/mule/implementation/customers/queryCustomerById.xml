@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="queryCustomerById" doc:id="e130f2b8-6b40-4be5-91d4-1cb4bacf0c2c" >
+		<ee:transform doc:name="client_id" doc:id="0cbaf40f-dbd8-4344-8109-98eb4771a305" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="client_id" ><![CDATA[attributes.uriParams.'client_id']]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="queryCustomerDB" doc:id="d5fe584f-0dcd-4bcf-aaab-75ccd3094213" name="queryCustomerDB"/>
+		<ee:transform doc:name="Transform Message" doc:id="097ac895-082a-4c56-a74b-1590adfca297">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  client_id: (payload.client_id)[0],
+  name: (payload.name)[0],
+  lastName: (payload.lastname)[0],
+  phones: payload.phone_number map ((phone) -> 
+    {
+        ddd: ((phone splitBy " ")[0] replace /[^0-9A-Za-z]*/ with "") as Number,
+        number: (phone splitBy " ")[1] as Number
+    }
+  ),
+  address: {
+    street: (payload.street)[0],
+    number: (payload.number)[0],
+    district: (payload.district)[0],
+    city: (payload.city)[0],
+    state: (payload.state)[0],
+    postalCode: (payload.postalCode)[0],
+  }
+} ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="queryCustomerDB" doc:id="a22f1c19-abbc-4c78-97e2-88197aa7144a" >
+		<try doc:name="Try" doc:id="548e80cf-427d-4703-b6ac-8977335c95fb" >
+			<db:select doc:name="Select" doc:id="c880aff4-1c56-4150-b4e9-91a4cbdc4fa2" config-ref="Database_Config">
+				<db:sql ><![CDATA[SELECT 
+	c.client_id,
+	c.name,
+    c.lastname,
+    a.street,
+    a."number",
+    a.district,
+    a.city,
+    a.state,
+	a.postal_code,    
+    p.phone_number
+FROM client c, address a, phone p
+WHERE c.client_id = a.client_id 
+AND	  c.client_id = p.client_id
+AND   c.client_id = :client_id;]]></db:sql>
+				<db:input-parameters ><![CDATA[#[{
+	client_id: vars.client_id
+}]]]></db:input-parameters>
+			</db:select>
+		</try>
+	</flow>
+</mule>
