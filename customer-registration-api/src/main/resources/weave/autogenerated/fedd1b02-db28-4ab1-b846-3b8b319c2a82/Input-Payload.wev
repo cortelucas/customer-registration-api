@@ -1,0 +1,13 @@
+%dw 2.0
+
+type auto_fedd1b02_db28_4ab1_b846_3b8b319c2a82_Input_Payload = Array<{|  name: String,   lastName: String,   phones: Array<{|    ddd: Number,     number: Number  |}>, 
+  address: {|
+    street: String, 
+    number: Number, 
+    district: String, 
+    city: String, 
+    state: String, 
+    postalCode: String
+  |}
+|}>
+
