@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="showHealthCheck" doc:id="77460d4e-f115-4c89-b11d-f7588489bb88" >
+		<logger level="INFO" doc:name="init_flow" doc:id="63298cd9-c39f-4ff9-ad62-04eb2f7d0786" message='#["init flow -&gt; " ++ flow.name]' />
+		<flow-ref doc:name="status_db" doc:id="d3f004c1-7832-4e10-b319-746307d5e0f1" name="healthCheckDB" target="status_db"/>
+		<ee:transform doc:name="Transform Message" doc:id="533a420c-34dd-45cb-a84c-fb0b22b27820" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	api_rest: {
+		name: app.name,
+		status: "UP",
+		message: "API is OK"
+	},
+	database: {
+		name: "customers",
+		status: vars.status_db.status,
+		message: vars.status_db.message
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="end_flow" doc:id="3f6c1f73-2a33-4f77-8b07-050d12aba8e5" message='#["init flow -&gt; " ++ flow.name]' />
+	</flow>
+	<flow name="healthCheckDB" doc:id="d504f8af-30dc-4a05-b27f-3b33e838cdd0" >
+		<try doc:name="Try" doc:id="f7818a34-ee23-4dd7-8064-42a9feae0661" >
+			<db:select doc:name="Select" doc:id="9ceacbd9-ebe6-4cb0-9372-b17aaa23840e" config-ref="Database_Config">
+				<db:sql ><![CDATA[SELECT 0]]></db:sql>
+			</db:select>
+			<ee:transform doc:name="Status DB" doc:id="0f7848f1-da0e-4d19-8b21-7f01e2d7667f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status:"UP",
+	message: "Database is OK"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="8706dcea-b789-476f-838b-973f07b3ee1b" >
+					<ee:transform doc:name="Status DB" doc:id="d806d485-893d-44be-98c6-c5ff8f6261d1" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status: "DOWN",
+	message: error.description as String default error.errorMessage as String
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+	</flow>
+</mule>
